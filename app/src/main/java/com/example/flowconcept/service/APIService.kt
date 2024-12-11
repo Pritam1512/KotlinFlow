@@ -7,5 +7,5 @@ import retrofit2.http.Path
 
 interface APIService {
     @GET("/comments/{id}")
-    suspend fun getComment(@Path("id") id:Int) : Response<CommentData>
+    suspend fun getComment(@Path("id") id:Int) : CommentData
 }

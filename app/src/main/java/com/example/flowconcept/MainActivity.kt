@@ -49,11 +49,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setUpObserver() {
-        mainViewModel.comment.observe(this){
+        mainViewModel._comment.observe(this){
 
-            val name = mainViewModel.comment.value?.name
-            val email = mainViewModel.comment.value?.email
-            val body = mainViewModel.comment.value?.body
+            val name = mainViewModel._comment.value?.name
+            val email = mainViewModel._comment.value?.email
+            val body = mainViewModel._comment.value?.body
 
 
             mainViewBinding.textViewName.text = name

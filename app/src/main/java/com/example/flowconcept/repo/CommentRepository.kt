@@ -5,23 +5,28 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.flowconcept.model.CommentData
 import com.example.flowconcept.service.APIService
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 
 class CommentRepository(private val apiService: APIService) {
 
     private val TAG = "CommentRepository"
-    private val commentLiveData = MutableLiveData<CommentData>()
+    suspend fun getComment(id: Int) :Flow<CommentData>{
 
-    val _commentLiveData: LiveData<CommentData>
-        get() = commentLiveData
+        Log.i(TAG, "getComment")
+        return flow{
+            val result = apiService.getComment(id)
+            if(result.body != null){
+                Log.i(TAG,"result :: ${result.body}")
+            }else{
+                Log.i(TAG, "result is null")
+            }
+            emit(result)
+        }.flowOn(Dispatchers.IO)
 
-    suspend fun getComment(id: Int){
-        val result = apiService.getComment(id)
-        Log.i(TAG,result.toString())
-        if(result.body() !=null){
-            commentLiveData.postValue(result.body())
-            Log.i(TAG,"result :: ${result.body()}")
-        }else{
-            Log.i(TAG, "result is null")
-        }
     }
 }
