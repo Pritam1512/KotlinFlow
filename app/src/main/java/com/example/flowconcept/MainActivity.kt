@@ -3,16 +3,18 @@ package com.example.flowconcept
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.example.flowconcept.databinding.ActivityMainBinding
 import com.example.flowconcept.repo.CommentRepository
 import com.example.flowconcept.service.APIService
 import com.example.flowconcept.service.RetrofitHelper
+import com.example.flowconcept.viewmodel.HandleProgress
 import com.example.flowconcept.viewmodel.MainViewModel
 import com.example.flowconcept.viewmodel.MainViewModelFactory
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), HandleProgress {
     lateinit var mainViewModel: MainViewModel
     lateinit var mainViewBinding: ActivityMainBinding
 
@@ -22,10 +24,9 @@ class MainActivity : AppCompatActivity() {
         mainViewBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mainViewBinding.root)
 
-
         Log.i(TAG,"OnCreate")
         val commentService = RetrofitHelper.getInstance().create(APIService::class.java)
-        val repository = CommentRepository(commentService)
+        val repository = CommentRepository(commentService,this)
 
         mainViewModel = ViewModelProvider(this,MainViewModelFactory(repository)).get(MainViewModel::class.java)
 
@@ -60,5 +61,12 @@ class MainActivity : AppCompatActivity() {
             mainViewBinding.textViewEmail.text = email
             mainViewBinding.textViewBody.text = body
         }
+    }
+    override fun showProgress() {
+        mainViewBinding.progressBar.visibility = View.VISIBLE
+    }
+
+    override fun hideProgress() {
+        mainViewBinding.progressBar.visibility = View.INVISIBLE
     }
 }
