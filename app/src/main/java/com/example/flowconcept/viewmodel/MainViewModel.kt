@@ -25,8 +25,24 @@ class MainViewModel(private val repository: CommentRepository) : ViewModel() {
 
     init {
         Log.i(TAG,"init")
+
+
+        // unless we catch the emitted data,
+        // flow will not produce the data (i.e; It will not make network call)
+
+        // once we add .collect, now it will make call for the first time
+        // and then it will keep on collecting the data based on api call
+
+
         viewModelScope.launch(Dispatchers.IO + coroutineExceptionHandler) {
             repository.getComment(1)
+                .catch {
+                    e -> Log.e(TAG, "error occurred ${e.localizedMessage}")
+                }
+                .collect{
+                    Log.d("MainViewModel", "data received $it")  // this is the data from api call
+                    comment.postValue(it)
+                }
         }
     }
 
