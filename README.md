@@ -3,6 +3,7 @@ Current functionalties --
 2. Show and hide progress bar
 3. Used Kotlin-flow to get the data
 4. Used Kotlin-coroutines 
+5. Integrated DI for Retrofit 
 
 
 TO-DO
