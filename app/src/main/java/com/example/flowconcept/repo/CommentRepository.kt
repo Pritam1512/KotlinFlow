@@ -23,10 +23,11 @@ class CommentRepository(private val apiService: APIService, handleProgress: Hand
         Log.i(TAG,"init")
         progress = handleProgress
     }
-    suspend fun getComment(id: Int) :Flow<CommentData>{
+    suspend fun getComment(id: Int) : Flow<CommentData>{
 
+        val currentTime = System.currentTimeMillis()
         Log.i(TAG, "getComment")
-        return flow{
+        return flow {
             withContext(Dispatchers.Main){
                 progress.showProgress()
             }
@@ -37,6 +38,8 @@ class CommentRepository(private val apiService: APIService, handleProgress: Hand
                 Log.i(TAG, "result is null")
             }
             emit(result)
+            val dataReceivedTime = System.currentTimeMillis()
+            Log.i(TAG, "time taken to fetch data :: ${dataReceivedTime - currentTime}")
             withContext(Dispatchers.Main){
                 progress.hideProgress()
             }

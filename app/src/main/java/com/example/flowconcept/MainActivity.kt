@@ -7,25 +7,37 @@ import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.example.flowconcept.databinding.ActivityMainBinding
+import com.example.flowconcept.di.DaggerNetworkComponent
+import com.example.flowconcept.di.NetworkComponent
 import com.example.flowconcept.repo.CommentRepository
 import com.example.flowconcept.service.APIService
 import com.example.flowconcept.service.RetrofitHelper
 import com.example.flowconcept.viewmodel.HandleProgress
 import com.example.flowconcept.viewmodel.MainViewModel
 import com.example.flowconcept.viewmodel.MainViewModelFactory
+import retrofit2.Retrofit
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), HandleProgress {
     lateinit var mainViewModel: MainViewModel
     lateinit var mainViewBinding: ActivityMainBinding
 
     private val TAG = "MainActivity"
+
+    @Inject
+    lateinit var retrofit : Retrofit
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainViewBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mainViewBinding.root)
 
+        DaggerNetworkComponent.builder().build().inject(this)
         Log.i(TAG,"OnCreate")
-        val commentService = RetrofitHelper.getInstance().create(APIService::class.java)
+
+        //val retrofit = RetrofitHelper.getInstance()
+        val commentService = retrofit.create(APIService::class.java)
+        Log.i(TAG,"$retrofit")
         val repository = CommentRepository(commentService,this)
 
         mainViewModel = ViewModelProvider(this,MainViewModelFactory(repository)).get(MainViewModel::class.java)
