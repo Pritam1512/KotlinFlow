@@ -17,8 +17,5 @@ class NetworkModule {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
-    @Provides
-    fun provideDBManager():DatabaseManager{
-        return DatabaseManager()
-    }
+
 }
