@@ -1,5 +1,6 @@
 package com.example.flowconcept.di
 
+import com.example.flowconcept.DatabaseManager
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
@@ -15,5 +16,9 @@ class NetworkModule {
         return Retrofit.Builder().baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
+    }
+    @Provides
+    fun provideDBManager():DatabaseManager{
+        return DatabaseManager()
     }
 }

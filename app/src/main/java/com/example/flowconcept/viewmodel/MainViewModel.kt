@@ -53,6 +53,11 @@ class MainViewModel(private val repository: CommentRepository) : ViewModel() {
     val _comment : LiveData<CommentData>
         get() = comment
 
+    private val isDataFetechedSuccesfully = MutableLiveData<Boolean>()
+
+    val _isDataFetechedSuccesfully : LiveData<Boolean>
+        get() = isDataFetechedSuccesfully
+
 
     fun makeApiCall(id: Int) {
 
@@ -62,7 +67,6 @@ class MainViewModel(private val repository: CommentRepository) : ViewModel() {
         // we can collect the data using .collect method of flow
         // here we are just logging the error but we can do more with it like showing error message to user etc.
 
-
         viewModelScope.launch(Dispatchers.IO) {
             repository.getComment(id)
                 .catch {
@@ -71,6 +75,7 @@ class MainViewModel(private val repository: CommentRepository) : ViewModel() {
                 .collect{
                     Log.d("MainViewModel", "data received $it")  // this is the data from api call
                     comment.postValue(it)  // updating live data with new value so that view can observe it and update UI accordingly
+                    isDataFetechedSuccesfully.postValue(true)
                 }
         }
     }

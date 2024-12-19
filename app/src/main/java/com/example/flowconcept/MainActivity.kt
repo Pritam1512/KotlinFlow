@@ -27,6 +27,10 @@ class MainActivity : AppCompatActivity(), HandleProgress {
     @Inject
     lateinit var retrofit : Retrofit
 
+    @Inject
+    lateinit var databaseManager: DatabaseManager
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainViewBinding = ActivityMainBinding.inflate(layoutInflater)
@@ -44,9 +48,12 @@ class MainActivity : AppCompatActivity(), HandleProgress {
 
         setUpObserver()
         setUpListeners()
-
+        setUpDataFetchedObserver()
     }
 
+    private fun saveDataToDatabase(){
+        databaseManager.saveCommentToDatabase(mainViewModel._comment.value!!)
+    }
     private fun setUpListeners() {
         mainViewBinding.button.setOnClickListener{
             if(mainViewBinding.editTextText.text.isNullOrEmpty()){
@@ -58,9 +65,19 @@ class MainActivity : AppCompatActivity(), HandleProgress {
 
             Log.i(TAG,"page :: $pageNo")
             mainViewModel.makeApiCall(pageNo)
+
         }
     }
-
+    private fun setUpDataFetchedObserver(){
+        mainViewModel._isDataFetechedSuccesfully.observe(this){
+            if (it) {
+                Log.i(TAG, "Data fetched successfully")
+                saveDataToDatabase()
+            } else {
+                Log.i(TAG, "Data not fetched successfully")
+            }
+        }
+    }
     private fun setUpObserver() {
         mainViewModel._comment.observe(this){
 
